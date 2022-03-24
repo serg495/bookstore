@@ -1,0 +1,47 @@
+# For more information: https://laravel.com/docs/sail
+version: '3'
+
+services:
+    php:
+        build: ./docker/php
+        container_name: php
+        environment:
+            XDEBUG_CONFIG: "remote_host=${XDEBUG_HOST} xdebug.mode=debug remote_port=9003"
+            PHP_IDE_CONFIG: "serverName=Docker"
+        volumes:
+            - .:/var/www
+        networks:
+            - sail
+    nginx:
+        image: nginx:alpine
+        container_name: nginx
+        ports:
+            - 82:80
+        volumes:
+            - .:/var/www
+            - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+        networks:
+            - sail
+    mysql:
+        image: 'mysql:8.0'
+        ports:
+            - '3307:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: 'rootPassword'
+            MYSQL_DATABASE: 'bookstore'
+            MYSQL_USER: 'user'
+            MYSQL_PASSWORD: 'password'
+        volumes:
+            - 'sailmysql:/var/lib/mysql'
+        networks:
+            - sail
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+            retries: 3
+            timeout: 5s
+networks:
+    sail:
+        driver: bridge
+volumes:
+    sailmysql:
+        driver: local
