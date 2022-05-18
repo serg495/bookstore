@@ -20,7 +20,9 @@ class FilterAuthorsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'search' => ['string', 'max:50'],
+            'firstname' => ['string', 'max:50'],
+            'lastname' => ['string', 'max:50'],
         ];
     }
 }

@@ -52,6 +52,14 @@ abstract class QueryFilter
         return $this->query;
     }
 
+    /**
+     * @return Builder
+     */
+    protected function getQuery(): Builder
+    {
+        return $this->query;
+    }
+
     protected function preFiltering(): void
     {
 
